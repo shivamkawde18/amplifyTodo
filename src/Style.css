@@ -1,0 +1,37 @@
+.mainDiv{
+    /* position: relative;
+    top: 3rem; */
+}
+.App1{
+    height: 97vh;
+    width: 100vw;
+    background: whitesmoke
+}
+.check{
+    width: 2rem;
+    height: 2rem;
+    position: relative;
+    top: 11px;
+}
+.name{
+    height: 2rem;
+}
+.content{
+    height: 2rem;
+}
+.addTask{
+    height: 3em;
+}
+.completeDiv{
+    display: flex;
+    justify-content: space-evenly;
+}
+.cTask{
+    color: blue;
+}
+.uTask{
+    color: blue;
+}
+.aTask{
+    color: blue;
+}
