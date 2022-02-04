@@ -12,7 +12,7 @@ import Name from "../../component/task/Name/Name";
 import Content from "../../component/task/Content/Content";
 import { createTodo } from '/Users/shivamkawde/rectjs/todotype/src//graphql/mutations';
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import { listTodos } from '/Users/shivamkawde/rectjs/todotype/src//graphql/queries';
+import { complete,listTodos } from '/Users/shivamkawde/rectjs/todotype/src//graphql/queries';
 import awsExports from "/Users/shivamkawde/rectjs/todotype/src/aws-exports.js";
 Amplify.configure(awsExports);
 export interface task {
@@ -56,11 +56,14 @@ function Form() {
   };
   const data=async()=>{
     const todoData:any = await API.graphql(graphqlOperation(listTodos))   
+    console.log(todoData);
+    
     const todos = todoData.data.listTodos.items
      console.log(todos);
     setAllTasks(todos)
   }
   console.log(allTask);
+
   return (
     <div>
       <h3

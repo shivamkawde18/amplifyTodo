@@ -5,61 +5,72 @@ import Checkbox from "../../component/task/Checkbox/Checkbox";
 import Name from "../../component/task/Name/Name";
 import Content from "../../component/task/Content/Content";
 import Button from "../../component/Button/Button";
+import { deleteTodo} from '/Users/shivamkawde/rectjs/todotype/src//graphql/mutations';
+import { updateTodo } from "/Users/shivamkawde/rectjs/todotype/src//graphql/mutations";
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import awsExports from "/Users/shivamkawde/rectjs/todotype/src/aws-exports.js";
+import {listTodos} from '/Users/shivamkawde/rectjs/todotype/src//graphql/queries';
+Amplify.configure(awsExports);
 function Alltask(props: any) {
-  const deleteTask=(e:any)=>{
-    console.log(props.task);
-    let temp: any[];
-    let alldataStore=localStorage.getItem("tasks");
-    if(alldataStore!=null)
-    {
-        let alldataParse=JSON.parse(alldataStore);
-        temp=alldataParse;
-    }
-    else
-    {
-      temp=[]
-    }
-  console.log(temp);
- let finalArr =temp.filter((ele)=>{
-   
-     return ele.id!==e.id;
-   }
-
- )
-  console.log(finalArr);
-  localStorage.setItem("tasks",JSON.stringify(finalArr))
-  props.setAllTasks(finalArr);
-  }
-  const InputCheckBox=(task:any)=>{
-    //console.log(props.check);
-    let temp: any[];
-    let alldataStore=localStorage.getItem("tasks");
-    if(alldataStore!=null)
-    {
-        let alldataParse=JSON.parse(alldataStore);
-        temp=alldataParse;
-    }
-    else
-    {
-      temp=[]
-    }
-  console.log(temp);
-for(let i=0;i<temp.length;i++)
-{
-  if(task.id==temp[i].id)
-  {
-    if(temp[i].check===true)
-    {
-      temp[i].check=false;
-    }
-    else{
-      temp[i].check=true;
-    }
-  }
+  const deleteTask=async(e:any)=>{
+ console.log(e);
+ const todoDetails = {
+  id: e.id,
 }
-  console.log(temp);
-  localStorage.setItem("tasks",JSON.stringify(temp))
-  props.setAllTasks(temp);
+const newTodo = await API.graphql(graphqlOperation(deleteTodo,{input:todoDetails} ));
+const todoData:any = await API.graphql(graphqlOperation(listTodos))   
+console.log(todoData);
+const todos = todoData.data.listTodos.items
+console.log(todos);
+props.setAllTasks(todos)
+console.log(newTodo);
+}
+  const InputCheckBox=async(task:any)=>{
+    //console.log(props.check);
+//     let temp: any[];
+//     let alldataStore=localStorage.getItem("tasks");
+//     if(alldataStore!=null)
+//     {
+//         let alldataParse=JSON.parse(alldataStore);
+//         temp=alldataParse;
+//     }
+//     else
+//     {
+//       temp=[]
+//     }
+//   console.log(temp);
+// for(let i=0;i<temp.length;i++)
+// {
+//   if(task.id==temp[i].id)
+//   {
+//     if(temp[i].check===true)
+//     {
+//       temp[i].check=false;
+//     }
+//     else{
+//       temp[i].check=true;
+//     }
+//   }
+// }
+//   console.log(temp);
+//   localStorage.setItem("tasks",JSON.stringify(temp))
+  //props.setAllTasks(temp);
+  let Flag=false;
+  if(!task.check)
+  {
+    Flag=true;
+  }
+  const todoDetails = {
+    id: task.id,
+    check:Flag
+  };
+  const updatedTodo =  await API.graphql(graphqlOperation(updateTodo, {input: todoDetails}))
+  const todoData:any = await API.graphql(graphqlOperation(listTodos))   
+   console.log(todoData);
+   const todos = todoData.data.listTodos.items
+   console.log(todos);
+   props.setAllTasks(todos)
+   
   }
   return (
     <>
