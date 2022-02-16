@@ -1,24 +1,24 @@
 import React from "react";
 import { task,completeTaskProps } from "../../screen/Form/Form";
-import { useState, useEffect } from "react";
 import "../CompleteTask/StyleCompleteTask.css";
+import { useState, useEffect } from "react";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
-import { listTodosQuery } from "/Users/shivamkawde/rectjs/todotype/src//graphql/queries";
+import { listTodosQuery_ } from "/Users/shivamkawde/rectjs/todotype/src//graphql/queries";
 import awsExports from "/Users/shivamkawde/rectjs/todotype/src/aws-exports.js";
-import Name from "../Task/Name/Name";
-import Content from "../Task/Content/Content";
-import { deleteTodo ,updateTodo} from "/Users/shivamkawde/rectjs/todotype/src//graphql/mutations";
+import { Button } from "../Button";
+import { deleteTodo,updateTodo } from "/Users/shivamkawde/rectjs/todotype/src//graphql/mutations";
 import {
   listTodos,
   listCategories,
 } from "/Users/shivamkawde/rectjs/todotype/src//graphql/queries";
-import { Button } from "../Button";
+import Name from "../Task/Name/Name";
+import Content from "../Task/Content/Content";
 import Checkbox from "../Task/Checkbox/Checkbox";
 import Category from "../Task/Category/Category";
 import { TailSpin } from "react-loader-spinner";
 Amplify.configure(awsExports);
-function Completetask(props: completeTaskProps) {
-  const [completeTask, setCompleteTask] = useState([]);
+function Uncomplete(props:completeTaskProps ) {
+  const [unCompleteTask, setUnCompleteTask] = useState([]);
   const [categoryFlag, setCategoryFlag] = useState(false);
   const [taskCategoryId, setTaskCategoryId] = useState("");
   const [category, setCategory] = useState([]);
@@ -26,14 +26,16 @@ function Completetask(props: completeTaskProps) {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [ButtonId, setButtonId] = useState("");
   useEffect(() => {
-    let completeTaskFun = async () => {
-      const todoData: any = await API.graphql(graphqlOperation(listTodosQuery));
+    let uncompleteTaskFun = async () => {
+      const todoData: any = await API.graphql(
+        graphqlOperation(listTodosQuery_)
+      );
       const todos = todoData.data.listTodos.items;
       console.log(todoData);
       console.log(todos);
-      setCompleteTask(todos);
+      setUnCompleteTask(todos);
     };
-    completeTaskFun().then((e) => stopLoading(true));
+    uncompleteTaskFun().then(() => stopLoading(true));
   }, []);
   const deleteTask = async (e: any) => {
     console.log(e);
@@ -44,22 +46,26 @@ function Completetask(props: completeTaskProps) {
       const newTodo = await API.graphql(
         graphqlOperation(deleteTodo, { input: todoDetails })
       );
-      const todoData: any = await API.graphql(graphqlOperation(listTodosQuery));
+      const todoData: any = await API.graphql(
+        graphqlOperation(listTodosQuery_)
+      );
       console.log(todoData);
       const todos = todoData.data.listTodos.items;
       console.log(todos);
-      setCompleteTask(todos);
+      setUnCompleteTask(todos);
       data();
       console.log(newTodo);
     };
-    deleteTaskApi().then(() => setDeleteLoading(false));
+    deleteTaskApi().then(() => {
+      setDeleteLoading(false);
+    });
   };
+  console.log(props);
   const allCategory = async () => {
     const category: any = await API.graphql(graphqlOperation(listCategories));
     console.log(category);
     setCategory(category.data.listCategories.items);
   };
-  console.log(completeTask);
   const data = async () => {
     const todoData: any = await API.graphql(graphqlOperation(listTodos));
     console.log(todoData);
@@ -67,7 +73,7 @@ function Completetask(props: completeTaskProps) {
     console.log(todos);
     props.setAllTasks(todos);
   };
-console.log(props);
+
 
   const InputCheckBox = async (task: any) => {
     const InputCheckApi = async () => {
@@ -82,11 +88,11 @@ console.log(props);
       const updatedTodo = await API.graphql(
         graphqlOperation(updateTodo, { input: todoDetails })
       );
-      const todoData: any = await API.graphql(graphqlOperation(listTodosQuery));
+      const todoData: any = await API.graphql(graphqlOperation(listTodosQuery_));
       console.log(todoData);
       const todos = todoData.data.listTodos.items;
       console.log(todos);
-      setCompleteTask(todos);
+      setUnCompleteTask(todos);
     };
     InputCheckApi().then(() => setDeleteLoading(false));
 
@@ -94,19 +100,17 @@ console.log(props);
 
   return (
     <>
-      {completeTask.length === 0 && !loading ? (
+      {unCompleteTask.length === 0 && !loading ? (
         <div className="loadingDiv">
           <TailSpin color="red" />
         </div>
-      ) : loading && completeTask.length == 0 ? (
+      ) : loading && unCompleteTask.length == 0 ? (
         <h3>No Tasks</h3>
       ) : (
         ""
       )}
-
-<b className="taskCount">Complete task({completeTask.length})</b>
-      {completeTask.map((e: any, i: number) => {
-        console.log(e);
+       <b className="taskCount">Uncomplete task({unCompleteTask.length})</b>
+      {unCompleteTask.map((e: any, i: number) => {
         return (
           <div key={i}>
             <div className="mainDiv">
@@ -127,13 +131,13 @@ console.log(props);
                 </div>
                 <Checkbox check={e.check} task={e} flag="allTask"   InputCheckBox={InputCheckBox}
                     setButtonId={setButtonId}
-                    setDeleteLoading={setDeleteLoading}/>
+                    setDeleteLoading={setDeleteLoading} />
                 <br />
                 <Name name={e.name} flag="list" />
                 <br />
                 <Content content={e.description} flag="list" />
                 <br />
-                {deleteLoading && e.id == ButtonId ? (
+                {deleteLoading && ButtonId === e.id ? (
                   <div className="loadingDiv">
                     <TailSpin color="red" />
                   </div>
@@ -147,7 +151,7 @@ console.log(props);
                 )}
                 <Button
                   task={e}
-                 // mainArr={props.setAllTasks}
+                  //mainArr={props.setAllTasks}
                   setButtonId={setButtonId}
                   deleteTask={deleteTask}
                   flag={"delete"}
@@ -161,4 +165,4 @@ console.log(props);
     </>
   );
 }
-export default Completetask;
+export default Uncomplete;

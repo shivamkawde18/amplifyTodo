@@ -1,0 +1,15 @@
+.date{
+    height: 2rem;
+    width: 18rem;
+    margin-bottom: 9px;
+    cursor: pointer;
+    
+}
+.hideDiv{
+   
+    background: deepskyblue;
+    padding: 4px;
+}
+.date:hover  {
+color: brown;   
+}

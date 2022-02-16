@@ -4,7 +4,7 @@ import Form from '../screen/Form/Form';
 import "../Style.css"
 function App() {
   return (
-    <div className="App" style={{ background: "whitesmoke", height: "98vh" }}>    
+    <div className="App" style={{ background: "", height: "98vh" }}>    
       <Form/>
     </div>
   );

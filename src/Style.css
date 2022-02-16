@@ -1,6 +1,8 @@
 .mainDiv{
-    /* position: relative;
-    top: 3rem; */
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+    
 }
 .App1{
     height: 97vh;
@@ -12,6 +14,7 @@
     height: 2rem;
     position: relative;
     top: 11px;
+    cursor: pointer;
 }
 .name{
     height: 2rem;
@@ -21,6 +24,9 @@
 }
 .addTask{
     height: 3em;
+    width: 5rem;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 .completeDiv{
     display: flex;
@@ -28,10 +34,48 @@
 }
 .cTask{
     color: blue;
+    cursor: pointer;
+}
+
+.onCompleteTask{
+    color: #eb87ba;
+    cursor: pointer;
 }
 .uTask{
     color: blue;
+    cursor: pointer;
+}
+.onUncompeteTask{
+    color: #eb87ba;
+    cursor: pointer;
 }
 .aTask{
     color: blue;
+    cursor: pointer;
+}
+.onAllTask{
+    color: #eb87ba;
+    cursor: pointer;
+}
+.allFields{
+    border: solid;
+    width: 30rem;
+    border: none;
+    box-shadow: 1px 1px 5px grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+}
+.taskCategory{
+    position: relative;
+    left: 11rem;
+    top: -1rem;
+    cursor: pointer;
+}
+.refreshTodo{
+    cursor: pointer;
+}
+.taskInfoHeading{
+    background-color: deepskyblue;
+    padding: 2px
 }

@@ -7,3 +7,14 @@
 .aTask{
     color: blue;
 }
+.loadingDiv{
+    display: flex;
+    justify-content:center ;
+}
+.taskCount{
+    color: #ec4c63;
+
+}
+.completeDiv :hover{
+    color: green
+}

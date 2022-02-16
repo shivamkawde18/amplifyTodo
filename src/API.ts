@@ -5,14 +5,16 @@
 export type CreateTodoInput = {
   id?: string | null,
   name: string,
-  description?: string | null,
+  description: string,
   check?: boolean | null,
+  categoryId: string,
 };
 
 export type ModelTodoConditionInput = {
   name?: ModelStringInput | null,
   description?: ModelStringInput | null,
   check?: ModelBooleanInput | null,
+  categoryId?: ModelIDInput | null,
   and?: Array< ModelTodoConditionInput | null > | null,
   or?: Array< ModelTodoConditionInput | null > | null,
   not?: ModelTodoConditionInput | null,
@@ -65,37 +67,6 @@ export type ModelBooleanInput = {
   attributeType?: ModelAttributeTypes | null,
 };
 
-export type Todo = {
-  __typename: "Todo",
-  id: string,
-  name: string,
-  description?: string | null,
-  check?: boolean | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type UpdateTodoInput = {
-  id: string,
-  name?: string | null,
-  description?: string | null,
-  check?: boolean | null,
-};
-
-export type DeleteTodoInput = {
-  id: string,
-};
-
-export type ModelTodoFilterInput = {
-  id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  description?: ModelStringInput | null,
-  check?: ModelBooleanInput | null,
-  and?: Array< ModelTodoFilterInput | null > | null,
-  or?: Array< ModelTodoFilterInput | null > | null,
-  not?: ModelTodoFilterInput | null,
-};
-
 export type ModelIDInput = {
   ne?: string | null,
   eq?: string | null,
@@ -112,9 +83,97 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
+export type Todo = {
+  __typename: "Todo",
+  id: string,
+  name: string,
+  description: string,
+  check?: boolean | null,
+  categoryId: string,
+  category?: Category | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Category = {
+  __typename: "Category",
+  id: string,
+  type: string,
+  flag: string,
+  endingTime: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type UpdateTodoInput = {
+  id: string,
+  name?: string | null,
+  description?: string | null,
+  check?: boolean | null,
+  categoryId?: string | null,
+};
+
+export type DeleteTodoInput = {
+  id: string,
+};
+
+export type CreateCategoryInput = {
+  id?: string | null,
+  type: string,
+  flag: string,
+  endingTime: string,
+};
+
+export type ModelCategoryConditionInput = {
+  type?: ModelStringInput | null,
+  flag?: ModelStringInput | null,
+  endingTime?: ModelStringInput | null,
+  and?: Array< ModelCategoryConditionInput | null > | null,
+  or?: Array< ModelCategoryConditionInput | null > | null,
+  not?: ModelCategoryConditionInput | null,
+};
+
+export type UpdateCategoryInput = {
+  id: string,
+  type?: string | null,
+  flag?: string | null,
+  endingTime?: string | null,
+};
+
+export type DeleteCategoryInput = {
+  id: string,
+};
+
+export type ModelTodoFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  check?: ModelBooleanInput | null,
+  categoryId?: ModelIDInput | null,
+  and?: Array< ModelTodoFilterInput | null > | null,
+  or?: Array< ModelTodoFilterInput | null > | null,
+  not?: ModelTodoFilterInput | null,
+};
+
 export type ModelTodoConnection = {
   __typename: "ModelTodoConnection",
   items:  Array<Todo | null >,
+  nextToken?: string | null,
+};
+
+export type ModelCategoryFilterInput = {
+  id?: ModelIDInput | null,
+  type?: ModelStringInput | null,
+  flag?: ModelStringInput | null,
+  endingTime?: ModelStringInput | null,
+  and?: Array< ModelCategoryFilterInput | null > | null,
+  or?: Array< ModelCategoryFilterInput | null > | null,
+  not?: ModelCategoryFilterInput | null,
+};
+
+export type ModelCategoryConnection = {
+  __typename: "ModelCategoryConnection",
+  items:  Array<Category | null >,
   nextToken?: string | null,
 };
 
@@ -128,8 +187,18 @@ export type CreateTodoMutation = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -145,8 +214,18 @@ export type UpdateTodoMutation = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -162,8 +241,69 @@ export type DeleteTodoMutation = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateCategoryMutationVariables = {
+  input: CreateCategoryInput,
+  condition?: ModelCategoryConditionInput | null,
+};
+
+export type CreateCategoryMutation = {
+  createCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type UpdateCategoryMutationVariables = {
+  input: UpdateCategoryInput,
+  condition?: ModelCategoryConditionInput | null,
+};
+
+export type UpdateCategoryMutation = {
+  updateCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type DeleteCategoryMutationVariables = {
+  input: DeleteCategoryInput,
+  condition?: ModelCategoryConditionInput | null,
+};
+
+export type DeleteCategoryMutation = {
+  deleteCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -178,8 +318,18 @@ export type GetTodoQuery = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -198,8 +348,56 @@ export type ListTodosQuery = {
       __typename: "Todo",
       id: string,
       name: string,
-      description?: string | null,
+      description: string,
       check?: boolean | null,
+      categoryId: string,
+      category?:  {
+        __typename: "Category",
+        id: string,
+        type: string,
+        flag: string,
+        endingTime: string,
+        createdAt: string,
+        updatedAt: string,
+      } | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type GetCategoryQueryVariables = {
+  id: string,
+};
+
+export type GetCategoryQuery = {
+  getCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type ListCategoriesQueryVariables = {
+  filter?: ModelCategoryFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListCategoriesQuery = {
+  listCategories?:  {
+    __typename: "ModelCategoryConnection",
+    items:  Array< {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
       createdAt: string,
       updatedAt: string,
     } | null >,
@@ -212,8 +410,18 @@ export type OnCreateTodoSubscription = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -224,8 +432,18 @@ export type OnUpdateTodoSubscription = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -236,8 +454,54 @@ export type OnDeleteTodoSubscription = {
     __typename: "Todo",
     id: string,
     name: string,
-    description?: string | null,
+    description: string,
     check?: boolean | null,
+    categoryId: string,
+    category?:  {
+      __typename: "Category",
+      id: string,
+      type: string,
+      flag: string,
+      endingTime: string,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnCreateCategorySubscription = {
+  onCreateCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnUpdateCategorySubscription = {
+  onUpdateCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
+export type OnDeleteCategorySubscription = {
+  onDeleteCategory?:  {
+    __typename: "Category",
+    id: string,
+    type: string,
+    flag: string,
+    endingTime: string,
     createdAt: string,
     updatedAt: string,
   } | null,

@@ -1,6 +1,7 @@
 import React from "react";
-import "../Content/StyleContent.css";
-function Content(props:any)
+import "./StyleContent.css";
+import { contentProps } from "../../../screen/Form/Form";
+ const Content=(props:contentProps)=>
 {
   const taskInput = (e: any): void => {
     console.log(e.target.value);
@@ -11,13 +12,13 @@ function Content(props:any)
        {props.flag==="list"?
         <input
         className="content"
-        placeholder="what is your task ? "
+        placeholder={props.placeholder}
         value={props.content}
       />   
        :
        <input
        className="content"
-       placeholder="what is your task ? "
+       placeholder={props.placeholder}
        onKeyUp={taskInput}
      />}
       

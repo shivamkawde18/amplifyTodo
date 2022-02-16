@@ -9,6 +9,15 @@ export const onCreateTodo = /* GraphQL */ `
       name
       description
       check
+      categoryId
+      category {
+        id
+        type
+        flag
+        endingTime
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -21,6 +30,15 @@ export const onUpdateTodo = /* GraphQL */ `
       name
       description
       check
+      categoryId
+      category {
+        id
+        type
+        flag
+        endingTime
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
     }
@@ -33,6 +51,51 @@ export const onDeleteTodo = /* GraphQL */ `
       name
       description
       check
+      categoryId
+      category {
+        id
+        type
+        flag
+        endingTime
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateCategory = /* GraphQL */ `
+  subscription OnCreateCategory {
+    onCreateCategory {
+      id
+      type
+      flag
+      endingTime
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateCategory = /* GraphQL */ `
+  subscription OnUpdateCategory {
+    onUpdateCategory {
+      id
+      type
+      flag
+      endingTime
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteCategory = /* GraphQL */ `
+  subscription OnDeleteCategory {
+    onDeleteCategory {
+      id
+      type
+      flag
+      endingTime
       createdAt
       updatedAt
     }

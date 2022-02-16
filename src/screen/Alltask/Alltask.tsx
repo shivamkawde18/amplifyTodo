@@ -1,92 +1,155 @@
 import * as React from "react";
-import { task } from "../Form/Form";
-import {useState} from "react";
-import Checkbox from "../../component/task/Checkbox/Checkbox";
-import Name from "../../component/task/Name/Name";
-import Content from "../../component/task/Content/Content";
+import { task,nameProps,contentProps,buttonProps } from "../Form/Form";
+import { useState } from "react";
+import Checkbox from "../../component/Task/Checkbox/Checkbox";
+import Name from "../../component/Task/Name/Name";
+import Content from "../../component/Task/Content/Content";
 import Button from "../../component/Button/Button";
-import { deleteTodo} from '/Users/shivamkawde/rectjs/todotype/src//graphql/mutations';
+import { deleteTodo } from "/Users/shivamkawde/rectjs/todotype/src//graphql/mutations";
 import { updateTodo } from "/Users/shivamkawde/rectjs/todotype/src//graphql/mutations";
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import Amplify, { API, graphqlOperation } from "aws-amplify";
 import awsExports from "/Users/shivamkawde/rectjs/todotype/src/aws-exports.js";
-import {listTodos} from '/Users/shivamkawde/rectjs/todotype/src//graphql/queries';
+import {
+  listTodos,
+  listCategories,
+} from "/Users/shivamkawde/rectjs/todotype/src//graphql/queries";
+import Category from "../../component/Task/Category/Category";
+import { TailSpin } from "react-loader-spinner";
 Amplify.configure(awsExports);
-function Alltask(props: any) {
-  const deleteTask=async(e:any)=>{
- console.log(e);
- const todoDetails = {
-  id: e.id,
-}
-const newTodo = await API.graphql(graphqlOperation(deleteTodo,{input:todoDetails} ));
-const todoData:any = await API.graphql(graphqlOperation(listTodos))   
-console.log(todoData);
-const todos = todoData.data.listTodos.items
-console.log(todos);
-props.setAllTasks(todos)
-console.log(newTodo);
-}
-  const InputCheckBox=async(task:any)=>{
-    //console.log(props.check);
-//     let temp: any[];
-//     let alldataStore=localStorage.getItem("tasks");
-//     if(alldataStore!=null)
-//     {
-//         let alldataParse=JSON.parse(alldataStore);
-//         temp=alldataParse;
-//     }
-//     else
-//     {
-//       temp=[]
-//     }
-//   console.log(temp);
-// for(let i=0;i<temp.length;i++)
-// {
-//   if(task.id==temp[i].id)
-//   {
-//     if(temp[i].check===true)
-//     {
-//       temp[i].check=false;
-//     }
-//     else{
-//       temp[i].check=true;
-//     }
-//   }
-// }
-//   console.log(temp);
-//   localStorage.setItem("tasks",JSON.stringify(temp))
-  //props.setAllTasks(temp);
-  let Flag=false;
-  if(!task.check)
-  {
-    Flag=true;
-  }
-  const todoDetails = {
-    id: task.id,
-    check:Flag
+const Alltask = (props: any) => {
+  const [categoryFlag, setCategoryFlag] = useState(false);
+  const [taskCategoryId, setTaskCategoryId] = useState("");
+  const [category, setCategory] = useState([]);
+  const [deleteLoding, setDeleteLoading] = useState(false);
+  const [ButtonId, setButtonId] = useState("");
+  const deleteTask = async (e: any) => {
+    console.log(e);
+    const todoDetails = {
+      id: e.id,
+    };
+    const newTodo = await API.graphql(
+      graphqlOperation(deleteTodo, { input: todoDetails })
+    );
+    const todoData: any = await API.graphql(graphqlOperation(listTodos));
+    console.log(todoData);
+    const todos = todoData.data.listTodos.items;
+    console.log(todos);
+    props.setAllTasks(todos);
+    console.log(newTodo);
   };
-  const updatedTodo =  await API.graphql(graphqlOperation(updateTodo, {input: todoDetails}))
-  const todoData:any = await API.graphql(graphqlOperation(listTodos))   
-   console.log(todoData);
-   const todos = todoData.data.listTodos.items
-   console.log(todos);
-   props.setAllTasks(todos)
+  const InputCheckBox = async (task: any) => {
+    const InputCheckApi = async () => {
+      let Flag = false;
+      if (!task.check) {
+        Flag = true;
+      }
+      const todoDetails = {
+        id: task.id,
+        check: Flag,
+      };
+      const updatedTodo = await API.graphql(
+        graphqlOperation(updateTodo, { input: todoDetails })
+      );
+      const todoData: any = await API.graphql(graphqlOperation(listTodos));
+      console.log(todoData);
+      const todos = todoData.data.listTodos.items;
+      console.log(todos);
+      props.setAllTasks(todos);
+    };
+    InputCheckApi().then(() => setDeleteLoading(false));
+  };
+  const allCategory = async () => {
+    const category: any = await API.graphql(graphqlOperation(listCategories));
+    console.log(category);
+    setCategory(category.data.listCategories.items);
+  };
+  
+  const setNameProps:nameProps={
    
+    flag:"list",
+    name:""
+    
+  }
+  const setContentProps:contentProps={
+    flag:"list",
+    content:""
+  }
+  const setButtonProps:buttonProps={
+    task:"",
+    setButtonId:setButtonId,
+    deleteTask:deleteTask,
+    flag:"delete",
+    setDeleteLoading:setDeleteLoading,
+
   }
   return (
     <>
-      {props.allTask.map((e: task ,i:number) => {
-        return (
-          <div key={i}>
-            <div className="mainDiv">
-              <Checkbox check={e.check} InputCheckBox={InputCheckBox} task={e} flag="allTask"/>
-              <Name name={e.name} flag="list"/>
-              <Content content={e.description} flag="list" /> 
-              <Button task={e} mainArr={props.setAllTasks} deleteTask={deleteTask} flag={"delete"}/>
+      <b className="taskCount">All task({props.allTask.length})</b>
+      {props.allTask.length == 0 ? (
+        <h3>No Tasks</h3>
+      ) : (
+        props.allTask.map((e: any, i: number) => {
+          console.log(e);
+          return (
+            <div key={i}>
+              <div className="mainDiv">
+                <div className="allFields">
+                  <b>Task Info</b>
+                  <div
+                    className="taskCategory"
+                    onClick={(ele) => {
+                      if (categoryFlag) setCategoryFlag(false);
+                      else setCategoryFlag(true);
+                      setButtonId(e.id);
+                      setDeleteLoading(true);
+                      setTaskCategoryId(e.id);
+                      allCategory().then(()=>setDeleteLoading(false));
+                    }}
+                  >
+                    Task Category
+                  </div>
+                  <Checkbox
+                    check={e.check}
+                    InputCheckBox={InputCheckBox}
+                    setButtonId={setButtonId}
+                    setDeleteLoading={setDeleteLoading}
+                    task={e}
+                    flag="allTask"
+                  />
+                  <br />
+                  <Name 
+                    {...setNameProps.name=e.name}
+                    {...setNameProps}
+                 />
+                  <br />
+                  <Content 
+                  {...setContentProps.content=e.description}
+                  {...setContentProps}
+                   />
+                  <br />
+                  {deleteLoding && ButtonId === e.id ? (
+                    <div className="loadingDiv">
+                      <TailSpin color="red" />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {categoryFlag && taskCategoryId === e.id ? (
+                    <Category category={category} task={e}></Category>
+                  ) : (
+                    ""
+                  )}
+                  <Button
+                  {...setButtonProps.task=e}
+                  {...setButtonProps}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
     </>
   );
-}
+};
 export default Alltask;
